@@ -86,24 +86,30 @@ export const parseWordDocument = async (file, onProgress) => {
       renderContentControls: false,
       renderSdt: false,
       
-      // Font handling - preserve exact fonts and sizes
-      fontRendering: 'fast',
+      // ENHANCED: Font handling - preserve exact fonts and sizes
+      fontRendering: 'exact',
       fontSubstitution: false,
-      fontEmbedding: false,
+      fontEmbedding: true,
+      preserveFontMetrics: true,
       
-      // Spacing and layout - preserve document's exact spacing
+      // ENHANCED: Spacing and layout - preserve document's exact spacing
       preserveWhitespace: true,
       preserveLineBreaks: true,
       preserveIndentation: true,
       preserveMargins: true,
       preservePadding: true,
+      preserveTextSpacing: true,
+      preserveWordSpacing: true,
+      preserveLetterSpacing: true,
       
-      // Color and styling - preserve exact colors and effects
+      // ENHANCED: Color and styling - preserve exact colors and effects
       preserveColors: true,
       preserveEffects: true,
       preserveShadows: true,
       preserveBorders: true,
-      preserveBackgrounds: true
+      preserveBackgrounds: true,
+      preserveTextFormatting: true,
+      preserveInlineStyles: true
     });
     
     if (onProgress) onProgress('Processing images and content...');
