@@ -18,25 +18,12 @@
   transition: transform 0.2s ease-out;
 }
 
-/* CRITICAL: Prevent any automatic zooming or scaling - preserve exact Word formatting */
+/* Prevent any automatic zooming or scaling */
 .word-document-preview * {
-  /* Preserve original Word document formatting exactly */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  letter-spacing: inherit !important;
-  word-spacing: inherit !important;
-  text-align: inherit !important;
-  color: inherit !important;
-  background-color: inherit !important;
-  margin: inherit !important;
-  padding: inherit !important;
-  border: inherit !important;
-  /* Prevent any transformations that could alter appearance */
   transform: none !important;
   zoom: 1 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
 }
 
 /* Ensure tables and images don't scale beyond container */
@@ -45,18 +32,12 @@
   width: 100% !important;
   table-layout: auto;
   word-wrap: break-word;
-  /* Preserve table formatting exactly */
-  border-collapse: inherit !important;
-  border-spacing: inherit !important;
 }
 
 .word-document-preview img {
   max-width: 100% !important;
   height: auto !important;
   display: block;
-  /* Preserve image positioning and styling */
-  object-fit: inherit !important;
-  object-position: inherit !important;
 }
 
 /* Handle long text and prevent horizontal overflow */
@@ -66,575 +47,455 @@
   max-width: 100%;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  /* Preserve text formatting exactly */
-  text-indent: inherit !important;
-  text-decoration: inherit !important;
 }
 
-/* ENHANCED: Word-level diff highlighting - preserve ALL original formatting */
-.word-document-preview .diff-highlight-added {
-  background-color: #dcfce7 !important;
-  color: #166534 !important;
-  border-radius: 2px !important;
-  padding: 1px 2px !important;
-  /* Preserve ALL original text formatting */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  letter-spacing: inherit !important;
-  word-spacing: inherit !important;
-  text-decoration: inherit !important;
-  text-transform: inherit !important;
-  white-space: inherit !important;
-  vertical-align: inherit !important;
+/* Word-level diff highlighting styles - preserve original formatting completely */
+.word-document-preview .diff-insert {
+  background-color: #dcfce7;
+  color: #166534;
+  border-radius: 3px;
+  padding: 1px 2px;
+  text-decoration: none;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
 }
 
-.word-document-preview .diff-highlight-removed {
-  background-color: #fecaca !important;
-  color: #991b1b !important;
-  border-radius: 2px !important;
-  padding: 1px 2px !important;
-  text-decoration: line-through !important;
-  /* Preserve ALL original text formatting */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  letter-spacing: inherit !important;
-  word-spacing: inherit !important;
-  text-transform: inherit !important;
-  white-space: inherit !important;
-  vertical-align: inherit !important;
+.word-document-preview .diff-delete {
+  background-color: #fecaca;
+  color: #991b1b;
+  border-radius: 3px;
+  padding: 1px 2px;
+  text-decoration: line-through;
+  font-weight: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
 }
 
-/* Placeholder styles that preserve formatting context */
-.word-document-preview .diff-placeholder-added,
-.word-document-preview .diff-placeholder-removed {
-  /* Preserve original formatting while showing placeholder */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-  margin: inherit !important;
-  padding: 2px 4px !important;
-  border-radius: 3px !important;
-  font-style: italic !important;
-  opacity: 0.8 !important;
-  display: inline !important;
+/* Ensure diff highlighting doesn't affect layout */
+.word-document-preview .diff-insert,
+.word-document-preview .diff-delete {
+  box-sizing: border-box;
+  vertical-align: baseline;
+  white-space: inherit;
+  word-spacing: inherit;
+  letter-spacing: inherit;
 }
 
-/* Element-level highlighting that preserves Word formatting */
-.word-document-preview .git-element-added {
+/* Enhanced word-level diff highlighting */
+.word-document-preview .git-line-added {
   background-color: #f0fdf4;
   border-left: 4px solid #22c55e;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
+  padding: 8px 12px;
+  margin: 4px 0;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(34, 197, 94, 0.1);
 }
 
-.word-document-preview .git-element-removed {
+.word-document-preview .git-line-removed {
   background-color: #fef2f2;
   border-left: 4px solid #ef4444;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
+  padding: 8px 12px;
+  margin: 4px 0;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(239, 68, 68, 0.1);
 }
 
-.word-document-preview .git-element-modified {
+.word-document-preview .git-line-modified {
   background-color: #fffbeb;
   border-left: 4px solid #f59e0b;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
+  padding: 8px 12px;
+  margin: 4px 0;
   border-radius: 6px;
   box-shadow: 0 1px 3px rgba(245, 158, 11, 0.1);
 }
 
-.word-document-preview .git-element-format-changed {
-  outline: 2px solid #8b5cf6 !important;
-  outline-offset: 2px !important;
-  background-color: #faf5ff !important;
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(139, 92, 246, 0.1);
-}
-
-/* Placeholder elements that maintain document structure */
-.word-document-preview .git-placeholder-added {
-  background-color: #f0fdf4 !important;
-  border: 2px dashed #22c55e !important;
-  color: #166534 !important;
-  padding: 8px 12px !important;
-  margin: 4px 0 !important;
-  border-radius: 6px !important;
-  font-style: italic !important;
-  opacity: 0.8 !important;
-  /* Preserve original element's display properties */
-  display: inherit !important;
-  width: inherit !important;
-  height: auto !important;
-}
-
-.word-document-preview .git-placeholder-removed {
-  background-color: #fef2f2 !important;
-  border: 2px dashed #ef4444 !important;
-  color: #991b1b !important;
-  padding: 8px 12px !important;
-  margin: 4px 0 !important;
-  border-radius: 6px !important;
-  font-style: italic !important;
-  opacity: 0.8 !important;
-  /* Preserve original element's display properties */
-  display: inherit !important;
-  width: inherit !important;
-  height: auto !important;
-}
-
-/* CRITICAL: Ensure highlighting never overrides Word document formatting */
-.word-document-preview .diff-highlight-added,
-.word-document-preview .diff-highlight-removed,
-.word-document-preview .diff-placeholder-added,
-.word-document-preview .diff-placeholder-removed {
-  /* Only add highlighting colors - preserve ALL other formatting */
-  display: inline !important;
-  vertical-align: baseline !important;
-  /* Do NOT override any text formatting properties */
-}
-
-/* Preserve table formatting exactly */
-.word-document-preview table {
-  /* Maintain original table styling */
-  border-collapse: inherit !important;
-  border-spacing: inherit !important;
-  width: inherit !important;
-  margin: inherit !important;
-  padding: inherit !important;
-}
-
-.word-document-preview table td,
-.word-document-preview table th {
-  /* Maintain original cell styling */
-  padding: inherit !important;
-  margin: inherit !important;
-  border: inherit !important;
-  text-align: inherit !important;
-  vertical-align: inherit !important;
-  width: inherit !important;
-  height: inherit !important;
-}
-
-/* Preserve list formatting exactly */
-.word-document-preview ul,
-.word-document-preview ol {
-  list-style-type: inherit !important;
-  list-style-position: inherit !important;
-  margin: inherit !important;
-  padding: inherit !important;
-}
-
-.word-document-preview li {
-  margin: inherit !important;
-  padding: inherit !important;
-  list-style: inherit !important;
-}
-
-/* Preserve heading formatting exactly */
-.word-document-preview h1,
-.word-document-preview h2,
-.word-document-preview h3,
-.word-document-preview h4,
-.word-document-preview h5,
-.word-document-preview h6 {
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-  margin: inherit !important;
-  padding: inherit !important;
-  text-align: inherit !important;
-  color: inherit !important;
-}
-
-/* Preserve paragraph formatting exactly */
-.word-document-preview p {
-  margin: inherit !important;
-  padding: inherit !important;
-  text-indent: inherit !important;
-  text-align: inherit !important;
-  line-height: inherit !important;
-}
-
-/* Preserve blockquote formatting exactly */
-.word-document-preview blockquote {
-  margin: inherit !important;
-  padding: inherit !important;
-  border: inherit !important;
-  font-style: inherit !important;
-  text-align: inherit !important;
-}
-
-/* CRITICAL: Ensure diff highlights don't break Word formatting */
-.word-document-preview .diff-highlight-added *,
-.word-document-preview .diff-highlight-removed *,
-.word-document-preview .diff-placeholder-added *,
-.word-document-preview .diff-placeholder-removed * {
-  /* Preserve nested element formatting */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  color: inherit !important;
-  line-height: inherit !important;
-  margin: inherit !important;
-  padding: inherit !important;
-}
-
-/* Legacy diff styles - updated to preserve formatting */
-.word-document-preview .diff-insert {
-  background-color: #dcfce7 !important;
-  color: #166534 !important;
-  border-radius: 2px !important;
-  padding: 1px 2px !important;
-  /* Preserve ALL original formatting */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  text-decoration: inherit !important;
-  white-space: inherit !important;
-}
-
-.word-document-preview .diff-delete {
-  background-color: #fecaca !important;
-  color: #991b1b !important;
-  border-radius: 2px !important;
-  padding: 1px 2px !important;
-  text-decoration: line-through !important;
-  /* Preserve ALL original formatting */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  white-space: inherit !important;
-}
-
-/* Table cell highlighting that preserves cell formatting */
-.word-document-preview .git-cell-added {
-  background-color: #f0fdf4 !important;
-  border-left: 3px solid #22c55e !important;
-  /* Preserve original cell formatting */
-  padding: inherit !important;
-  text-align: inherit !important;
-  vertical-align: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-}
-
-.word-document-preview .git-cell-removed {
-  background-color: #fef2f2 !important;
-  border-left: 3px solid #ef4444 !important;
-  /* Preserve original cell formatting */
-  padding: inherit !important;
-  text-align: inherit !important;
-  vertical-align: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-}
-
-.word-document-preview .git-cell-modified {
-  background-color: #fffbeb !important;
-  border-left: 3px solid #f59e0b !important;
-  /* Preserve original cell formatting */
-  padding: inherit !important;
-  text-align: inherit !important;
-  vertical-align: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-}
-
-/* Image highlighting that preserves image properties */
-.word-document-preview .git-image-added {
-  outline: 3px solid #22c55e;
-  outline-offset: 2px;
-  border-radius: 4px;
-  /* Preserve original image properties */
-  width: inherit !important;
-  height: inherit !important;
-  object-fit: inherit !important;
-  object-position: inherit !important;
-}
-
-.word-document-preview .git-image-removed {
-  outline: 3px solid #ef4444;
-  outline-offset: 2px;
-  border-radius: 4px;
-  opacity: 0.7 !important;
-  /* Preserve original image properties */
-  width: inherit !important;
-  height: inherit !important;
-  object-fit: inherit !important;
-  object-position: inherit !important;
-}
-
-.word-document-preview .git-image-modified {
-  outline: 3px solid #f59e0b;
-  outline-offset: 2px;
-  border-radius: 4px;
-  /* Preserve original image properties */
-  width: inherit !important;
-  height: inherit !important;
-  object-fit: inherit !important;
-  object-position: inherit !important;
-}
-
-/* Table highlighting that preserves table structure */
-.word-document-preview .git-table-added {
-  outline: 2px solid #22c55e !important;
-  outline-offset: 2px !important;
-  background-color: rgba(240, 253, 244, 0.3) !important;
-  /* Preserve original table properties */
-  width: inherit !important;
-  border-collapse: inherit !important;
-  border-spacing: inherit !important;
-  margin: inherit !important;
-}
-
-.word-document-preview .git-table-removed {
-  outline: 2px solid #ef4444 !important;
-  outline-offset: 2px !important;
-  background-color: rgba(254, 242, 242, 0.3) !important;
-  opacity: 0.8 !important;
-  /* Preserve original table properties */
-  width: inherit !important;
-  border-collapse: inherit !important;
-  border-spacing: inherit !important;
-  margin: inherit !important;
-}
-
-.word-document-preview .git-table-modified {
-  outline: 2px solid #f59e0b !important;
-  outline-offset: 2px !important;
-  background-color: rgba(255, 251, 235, 0.3) !important;
-  /* Preserve original table properties */
-  width: inherit !important;
-  border-collapse: inherit !important;
-  border-spacing: inherit !important;
-  margin: inherit !important;
-}
-
-/* Row highlighting that preserves row formatting */
-.word-document-preview .git-row-added {
-  background-color: rgba(240, 253, 244, 0.5) !important;
-  border-left: 3px solid #22c55e !important;
-  /* Preserve original row properties */
-  height: inherit !important;
-}
-
-.word-document-preview .git-row-removed {
-  background-color: rgba(254, 242, 242, 0.5) !important;
-  border-left: 3px solid #ef4444 !important;
-  opacity: 0.8 !important;
-  /* Preserve original row properties */
-  height: inherit !important;
-}
-
-.word-document-preview .git-row-modified {
-  background-color: rgba(255, 251, 235, 0.5) !important;
-  border-left: 3px solid #f59e0b !important;
-  /* Preserve original row properties */
-  height: inherit !important;
-}
-
-/* CRITICAL: Preserve Word document fonts exactly */
-.word-document-preview [style*="font-family"] {
-  /* Never override font-family from Word document */
-  font-family: inherit !important;
-}
-
-.word-document-preview [style*="font-size"] {
-  /* Never override font-size from Word document */
-  font-size: inherit !important;
-}
-
-.word-document-preview [style*="color"] {
-  /* Only override color for diff highlights, preserve original otherwise */
-  color: inherit !important;
-}
-
-/* Ensure diff highlights work within any Word formatting context */
-.word-document-preview table .diff-highlight-added,
-.word-document-preview table .diff-highlight-removed,
-.word-document-preview li .diff-highlight-added,
-.word-document-preview li .diff-highlight-removed,
-.word-document-preview h1 .diff-highlight-added,
-.word-document-preview h1 .diff-highlight-removed,
-.word-document-preview h2 .diff-highlight-added,
-.word-document-preview h2 .diff-highlight-removed,
-.word-document-preview h3 .diff-highlight-added,
-.word-document-preview h3 .diff-highlight-removed,
-.word-document-preview h4 .diff-highlight-added,
-.word-document-preview h4 .diff-highlight-removed,
-.word-document-preview h5 .diff-highlight-added,
-.word-document-preview h5 .diff-highlight-removed,
-.word-document-preview h6 .diff-highlight-added,
-.word-document-preview h6 .diff-highlight-removed,
-.word-document-preview p .diff-highlight-added,
-.word-document-preview p .diff-highlight-removed,
-.word-document-preview blockquote .diff-highlight-added,
-.word-document-preview blockquote .diff-highlight-removed {
-  /* Minimal highlighting that doesn't interfere with Word formatting */
-  display: inline !important;
-  padding: 1px 2px !important;
-  border-radius: 2px !important;
-  /* Preserve parent element's formatting completely */
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  font-style: inherit !important;
-  line-height: inherit !important;
-  text-decoration: inherit !important;
-  text-align: inherit !important;
-  vertical-align: inherit !important;
-  margin: 0 !important;
-}
-
-/* Override only background colors for diff highlights */
-.word-document-preview .diff-highlight-added {
-  background-color: #dcfce7 !important;
-  color: #166534 !important;
-}
-
-.word-document-preview .diff-highlight-removed {
-  background-color: #fecaca !important;
-  color: #991b1b !important;
-  text-decoration: line-through !important;
-}
-
-/* Responsive design that maintains Word formatting */
-@media (max-width: 768px) {
-  .word-document-preview {
-    /* Allow natural scaling on mobile while preserving formatting */
-    transform-origin: top left;
-  }
-  
-  /* Preserve relative font sizes on mobile */
-  .word-document-preview * {
-    font-size: inherit !important;
-    line-height: inherit !important;
-  }
-}
-
-/* CRITICAL: Ensure no CSS resets interfere with Word formatting */
-.word-document-preview,
-.word-document-preview * {
-  /* Prevent any CSS resets from affecting Word document formatting */
-  all: unset;
-  /* Re-enable essential display properties */
-  display: revert;
-  box-sizing: border-box;
-  /* Allow Word document styles to take precedence */
-  font-family: revert;
-  font-size: revert;
-  font-weight: revert;
-  font-style: revert;
-  color: revert;
-  background-color: revert;
-  margin: revert;
-  padding: revert;
-  border: revert;
-  text-align: revert;
-  line-height: revert;
-  letter-spacing: revert;
-  word-spacing: revert;
-  text-decoration: revert;
-  text-indent: revert;
-  white-space: revert;
-  vertical-align: revert;
-  width: revert;
-  height: revert;
-}
-
-/* Re-enable container properties */
-.word-document-preview {
-  width: 100% !important;
-  box-sizing: border-box !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-  transform-origin: top left !important;
-  transition: transform 0.2s ease-out !important;
-}
-
-/* Re-enable image properties */
-.word-document-preview img {
-  max-width: 100% !important;
-  height: auto !important;
-  display: block !important;
-}
-
-/* Re-enable table properties */
-.word-document-preview table {
-  max-width: 100% !important;
-  width: 100% !important;
-  table-layout: auto !important;
-  word-wrap: break-word !important;
-}
-
-/* Re-enable text wrapping */
-.word-document-preview p,
-.word-document-preview div,
-.word-document-preview span {
-  max-width: 100% !important;
-  word-wrap: break-word !important;
-  overflow-wrap: break-word !important;
-}
-
-/* Legacy support for existing diff classes */
-.word-document-preview .git-line-added {
-  background-color: #f0fdf4 !important;
-  border-left: 4px solid #22c55e !important;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
-  border-radius: 6px !important;
-}
-
-.word-document-preview .git-line-removed {
-  background-color: #fef2f2 !important;
-  border-left: 4px solid #ef4444 !important;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
-  border-radius: 6px !important;
-}
-
-.word-document-preview .git-line-modified {
-  background-color: #fffbeb !important;
-  border-left: 4px solid #f59e0b !important;
-  padding-left: 8px !important;
-  margin: 2px 0 !important;
-  border-radius: 6px !important;
-}
-
 .word-document-preview .git-line-placeholder {
-  background-color: #f8fafc !important;
-  border: 2px dashed #94a3b8 !important;
-  padding: 8px 12px !important;
-  margin: 4px 0 !important;
-  border-radius: 6px !important;
-  font-style: italic !important;
-  opacity: 0.8 !important;
+  background: transparent;
+  border-left: 4px solid transparent;
+  margin: 4px 0;
+  border-radius: 6px;
+  min-height: 20px;
+  display: block;
+  /* Maintain original document formatting while showing as empty space */
+  color: transparent;
+  /* Preserve line height and spacing */
+  line-height: inherit;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+/* Enhanced inline word-level highlighting */
+.word-document-preview .git-inline-added {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  white-space: pre-wrap;
+  box-shadow: 0 1px 2px rgba(34, 197, 94, 0.1);
+  border: 1px solid #bbf7d0;
+}
+
+.word-document-preview .git-inline-removed {
+  background-color: #fecaca;
+  color: #991b1b;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+  white-space: pre-wrap;
+  box-shadow: 0 1px 2px rgba(239, 68, 68, 0.1);
+  border: 1px solid #fca5a5;
+  text-decoration: line-through;
+}
+
+/* Placeholder highlighting for mutual comparison */
+.word-document-preview .git-inline-placeholder {
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  white-space: pre-wrap;
+}
+
+/* Enhanced placeholder blocks */
+.word-document-preview .git-line-placeholder {
+  background: #f8fafc;
+  border: 2px dashed #94a3b8;
+  margin: 4px 0;
+  border-radius: 6px;
+  min-height: 32px;
+  display: block;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  line-height: inherit;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 .word-document-preview .placeholder-added {
   border-color: #22c55e !important;
-  background-color: #f0fdf4 !important;
-  color: #166534 !important;
+  background-color: #f0fdf4;
 }
 
 .word-document-preview .placeholder-removed {
   border-color: #ef4444 !important;
-  background-color: #fef2f2 !important;
-  color: #991b1b !important;
+  background-color: #fef2f2;
+}
+
+/* Image and table placeholders */
+.word-document-preview .image-placeholder,
+.word-document-preview .table-placeholder {
+  border: 2px dashed;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+  padding: 20px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.word-document-preview .image-placeholder:hover,
+.word-document-preview .table-placeholder:hover {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* Table cell Git-like highlighting */
+.word-document-preview .git-cell-added {
+  background-color: #f0fdf4;
+  border: 2px solid #22c55e;
+  box-shadow: inset 0 1px 3px rgba(34, 197, 94, 0.1);
+}
+
+.word-document-preview .git-cell-removed {
+  background-color: #fef2f2;
+  border: 2px solid #ef4444;
+  box-shadow: inset 0 1px 3px rgba(239, 68, 68, 0.1);
+}
+
+.word-document-preview .git-cell-modified {
+  background-color: #fffbeb;
+  border: 2px solid #f59e0b;
+  box-shadow: inset 0 1px 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Enhanced row-level highlighting */
+.word-document-preview .git-row-added {
+  background-color: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
+}
+
+.word-document-preview .git-row-removed {
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+/* Preserve original formatting while highlighting */
+.word-document-preview .git-line-added,
+.word-document-preview .git-line-removed {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: pre-wrap;
+}
+
+/* Only highlight actual changes - preserve original formatting for unchanged content */
+.word-document-preview .git-line-unchanged {
+  /* No highlighting for unchanged lines - preserve original formatting completely */
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: inherit;
+}
+
+/* Ensure unchanged content maintains original spacing and formatting */
+.word-document-preview .git-line-unchanged * {
+  background: inherit;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  margin: inherit;
+  padding: inherit;
+}
+
+/* Enhanced structural highlights */
+.word-document-preview img.structural-added,
+.word-document-preview table.structural-added {
+  outline: 3px solid #22c55e;
+  outline-offset: 2px;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.word-document-preview img.structural-removed,
+.word-document-preview table.structural-removed {
+  outline: 3px solid #ef4444;
+  outline-offset: 2px;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.word-document-preview img.structural-modified,
+.word-document-preview table.structural-modified {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+/* Enhanced mutual comparison styling */
+.word-document-preview .mutual-added {
+  background-color: #f0fdf4;
+  border-left: 4px solid #22c55e;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
+}
+
+.word-document-preview .mutual-removed {
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+}
+
+.word-document-preview .mutual-modified {
+  background-color: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.1);
+}
+
+/* Table cell-level highlights */
+.word-document-preview td.cell-added,
+.word-document-preview th.cell-added {
+  background-color: #f0fdf4;
+  border: 1px solid #22c55e;
+}
+
+.word-document-preview td.cell-removed,
+.word-document-preview th.cell-removed {
+  background-color: #fef2f2;
+  border: 1px solid #ef4444;
+}
+
+.word-document-preview td.cell-modified,
+.word-document-preview th.cell-modified {
+  background-color: #fffbeb;
+  border: 1px solid #f59e0b;
+}
+
+/* Preserve table formatting in diff mode */
+.word-document-preview table.word-table .diff-insert,
+.word-document-preview table.word-table .diff-delete {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+/* Preserve list formatting in diff mode */
+.word-document-preview li .diff-insert,
+.word-document-preview li .diff-delete {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+/* Preserve heading formatting in diff mode */
+.word-document-preview h1 .diff-insert,
+.word-document-preview h1 .diff-delete,
+.word-document-preview h2 .diff-insert,
+.word-document-preview h2 .diff-delete,
+.word-document-preview h3 .diff-insert,
+.word-document-preview h3 .diff-delete,
+.word-document-preview h4 .diff-insert,
+.word-document-preview h4 .diff-delete,
+.word-document-preview h5 .diff-insert,
+.word-document-preview h5 .diff-delete,
+.word-document-preview h6 .diff-insert,
+.word-document-preview h6 .diff-delete {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+/* Preserve paragraph formatting in diff mode */
+.word-document-preview p .diff-insert,
+.word-document-preview p .diff-delete {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  line-height: inherit;
+  text-indent: inherit;
+}
+
+/* Preserve blockquote formatting in diff mode */
+.word-document-preview blockquote .diff-insert,
+.word-document-preview blockquote .diff-delete {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font-style: inherit;
+}
+
+/* Do not alter image sizing or borders; rely on DOCX-rendered styles */
+
+/* Git-style left gutter with markers and line numbers */
+.word-document-preview .with-gutter {
+  position: relative;
+  padding-left: 48px;
+}
+
+.word-document-preview .git-gutter {
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+}
+
+.word-document-preview .git-gutter::before {
+  content: attr(data-marker);
+  font-weight: 700;
+  width: 10px;
+  text-align: center;
+}
+
+.word-document-preview .git-gutter::after {
+  content: attr(data-line);
+  color: #9ca3af;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .word-document-preview {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .word-document-preview h1 {
+    font-size: 1.8em;
+  }
+
+  .word-document-preview h2 {
+    font-size: 1.4em;
+  }
+
+  .word-document-preview table.word-table {
+    font-size: 12px;
+  }
+
+  .word-document-preview table.word-table th,
+  .word-document-preview table.word-table td {
+    padding: 6px 8px;
+  }
+}
+
+/* Table-level highlighting */
+.word-document-preview .git-table-added {
+  outline: 3px solid #22c55e;
+  outline-offset: 2px;
+  background-color: #f0fdf4;
+}
+
+.word-document-preview .git-table-removed {
+  outline: 3px solid #ef4444;
+  outline-offset: 2px;
+  background-color: #fef2f2;
+}
+
+/* Row-level highlighting */
+.word-document-preview .git-row-added {
+  background-color: #f0fdf4;
+  border-left: 4px solid #22c55e;
+}
+
+.word-document-preview .git-row-removed {
+  background-color: #fef2f2;
+  border-left: 4px solid #ef4444;
+}
+
+/* Image highlighting */
+.word-document-preview .git-image-added {
+  outline: 3px solid #22c55e;
+  outline-offset: 3px;
+  background-color: #f0fdf4;
+  border-radius: 4px;
+}
+
+.word-document-preview .git-image-removed {
+  outline: 3px solid #ef4444;
+  outline-offset: 3px;
+  background-color: #fef2f2;
+  border-radius: 4px;
+}
+
+.word-document-preview .git-image-modified {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+  background-color: #fffbeb;
+  border-radius: 4px;
 }
