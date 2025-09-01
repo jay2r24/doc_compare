@@ -28,7 +28,7 @@ export const compareHtmlDocuments = (leftHtml, rightHtml) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       try {
-        console.log('Starting mutual document comparison...');
+        console.log('Starting exact mutual document comparison...');
         
         // Quick text comparison first
         const leftText = extractPlainText(leftHtml);
@@ -45,11 +45,11 @@ export const compareHtmlDocuments = (leftHtml, rightHtml) => {
           return;
         }
 
-        console.log('Documents differ, performing mutual comparison...');
+        console.log('Documents differ, performing exact mutual comparison...');
         
-        // Perform comprehensive mutual comparison
-        const result = performComprehensiveMutualComparison(leftHtml, rightHtml);
-        console.log('Mutual comparison completed successfully');
+        // Perform exact mutual comparison with space preservation
+        const result = performExactMutualComparison(leftHtml, rightHtml);
+        console.log('Exact mutual comparison completed successfully');
         resolve(result);
         
       } catch (error) {
@@ -65,23 +65,23 @@ export const compareHtmlDocuments = (leftHtml, rightHtml) => {
   });
 };
 
-// Comprehensive mutual comparison that highlights all differences in both documents
-const performComprehensiveMutualComparison = (leftHtml, rightHtml) => {
+// Exact mutual comparison that preserves all spacing and dimensions
+const performExactMutualComparison = (leftHtml, rightHtml) => {
   const leftDiv = htmlToDiv(leftHtml);
   const rightDiv = htmlToDiv(rightHtml);
 
-  // Extract all structural elements for comparison
-  const leftElements = extractStructuralElements(leftDiv);
-  const rightElements = extractStructuralElements(rightDiv);
+  // Extract all elements with exact positioning and dimensions
+  const leftElements = extractElementsWithDimensions(leftDiv);
+  const rightElements = extractElementsWithDimensions(rightDiv);
 
-  console.log(`Comparing ${leftElements.length} vs ${rightElements.length} elements`);
+  console.log(`Comparing ${leftElements.length} vs ${rightElements.length} elements with exact dimensions`);
 
-  // Perform element-by-element mutual comparison
-  const { leftProcessed, rightProcessed, summary } = performElementMutualComparison(leftElements, rightElements);
+  // Perform exact element-by-element mutual comparison
+  const { leftProcessed, rightProcessed, summary } = performExactElementComparison(leftElements, rightElements);
 
-  // Apply the processed content back to the divs
-  applyMutualHighlighting(leftDiv, leftProcessed, 'left');
-  applyMutualHighlighting(rightDiv, rightProcessed, 'right');
+  // Apply the processed content back to the divs with exact spacing
+  applyExactMutualHighlighting(leftDiv, leftProcessed, 'left');
+  applyExactMutualHighlighting(rightDiv, rightProcessed, 'right');
 
   const detailed = generateDetailedMutualReport(leftElements, rightElements);
 
@@ -93,28 +93,30 @@ const performComprehensiveMutualComparison = (leftHtml, rightHtml) => {
   };
 };
 
-// Extract all structural elements (paragraphs, headings, tables, images, etc.)
-const extractStructuralElements = (container) => {
+// Extract all elements with their exact dimensions and positioning
+const extractElementsWithDimensions = (container) => {
   const elements = [];
   
-  // Get all block-level elements and important inline elements
+  // Get all meaningful elements including text nodes
   const selectors = [
     'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 
     'div', 'table', 'tr', 'td', 'th', 
     'ul', 'ol', 'li', 'blockquote', 
-    'img', 'figure', 'section', 'article'
+    'img', 'figure', 'section', 'article',
+    'span', 'strong', 'em', 'b', 'i'
   ];
   
   const allElements = container.querySelectorAll(selectors.join(','));
   
   allElements.forEach((element, index) => {
-    // Skip nested elements to avoid duplication
-    const isNested = selectors.some(selector => {
+    // Skip nested elements to avoid duplication, except for important inline elements
+    const isImportantInline = ['img', 'span', 'strong', 'em', 'b', 'i'].includes(element.tagName.toLowerCase());
+    const isNested = !isImportantInline && selectors.some(selector => {
       const parent = element.closest(selector);
       return parent && parent !== element && Array.from(allElements).includes(parent);
     });
     
-    if (isNested && element.tagName.toLowerCase() !== 'img') {
+    if (isNested) {
       return;
     }
     
@@ -122,22 +124,96 @@ const extractStructuralElements = (container) => {
     const html = element.outerHTML || '';
     const tagName = element.tagName.toLowerCase();
     
-    // Capture computed styles for format preservation
+    // Capture exact computed styles and dimensions
     const computedStyle = window.getComputedStyle(element);
+    const rect = element.getBoundingClientRect();
+    
+    const exactDimensions = {
+      width: rect.width,
+      height: rect.height,
+      offsetTop: element.offsetTop,
+      offsetLeft: element.offsetLeft,
+      scrollHeight: element.scrollHeight,
+      scrollWidth: element.scrollWidth,
+      clientHeight: element.clientHeight,
+      clientWidth: element.clientWidth
+    };
+    
     const preservedStyles = {
+      // Typography
       fontFamily: computedStyle.fontFamily,
       fontSize: computedStyle.fontSize,
       fontWeight: computedStyle.fontWeight,
       fontStyle: computedStyle.fontStyle,
+      lineHeight: computedStyle.lineHeight,
+      letterSpacing: computedStyle.letterSpacing,
+      wordSpacing: computedStyle.wordSpacing,
+      textAlign: computedStyle.textAlign,
+      textIndent: computedStyle.textIndent,
+      textDecoration: computedStyle.textDecoration,
+      textTransform: computedStyle.textTransform,
+      
+      // Colors
       color: computedStyle.color,
       backgroundColor: computedStyle.backgroundColor,
-      textAlign: computedStyle.textAlign,
-      lineHeight: computedStyle.lineHeight,
+      
+      // Spacing and layout
       margin: computedStyle.margin,
+      marginTop: computedStyle.marginTop,
+      marginRight: computedStyle.marginRight,
+      marginBottom: computedStyle.marginBottom,
+      marginLeft: computedStyle.marginLeft,
       padding: computedStyle.padding,
+      paddingTop: computedStyle.paddingTop,
+      paddingRight: computedStyle.paddingRight,
+      paddingBottom: computedStyle.paddingBottom,
+      paddingLeft: computedStyle.paddingLeft,
+      
+      // Borders
       border: computedStyle.border,
+      borderTop: computedStyle.borderTop,
+      borderRight: computedStyle.borderRight,
+      borderBottom: computedStyle.borderBottom,
+      borderLeft: computedStyle.borderLeft,
+      borderRadius: computedStyle.borderRadius,
+      
+      // Dimensions
       width: computedStyle.width,
-      height: computedStyle.height
+      height: computedStyle.height,
+      minWidth: computedStyle.minWidth,
+      minHeight: computedStyle.minHeight,
+      maxWidth: computedStyle.maxWidth,
+      maxHeight: computedStyle.maxHeight,
+      
+      // Display and positioning
+      display: computedStyle.display,
+      position: computedStyle.position,
+      top: computedStyle.top,
+      right: computedStyle.right,
+      bottom: computedStyle.bottom,
+      left: computedStyle.left,
+      zIndex: computedStyle.zIndex,
+      
+      // Flexbox and grid
+      flexDirection: computedStyle.flexDirection,
+      flexWrap: computedStyle.flexWrap,
+      justifyContent: computedStyle.justifyContent,
+      alignItems: computedStyle.alignItems,
+      alignContent: computedStyle.alignContent,
+      
+      // Table specific
+      borderCollapse: computedStyle.borderCollapse,
+      borderSpacing: computedStyle.borderSpacing,
+      tableLayout: computedStyle.tableLayout,
+      
+      // Other important properties
+      overflow: computedStyle.overflow,
+      overflowX: computedStyle.overflowX,
+      overflowY: computedStyle.overflowY,
+      whiteSpace: computedStyle.whiteSpace,
+      wordWrap: computedStyle.wordWrap,
+      wordBreak: computedStyle.wordBreak,
+      verticalAlign: computedStyle.verticalAlign
     };
     
     elements.push({
@@ -151,7 +227,12 @@ const extractStructuralElements = (container) => {
       isTable: tagName === 'table',
       isTableRow: tagName === 'tr',
       isTableCell: tagName === 'td' || tagName === 'th',
+      isHeading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(tagName),
+      isParagraph: tagName === 'p',
+      isList: tagName === 'ul' || tagName === 'ol',
+      isListItem: tagName === 'li',
       preservedStyles,
+      exactDimensions,
       originalElement: element
     });
   });
@@ -159,14 +240,14 @@ const extractStructuralElements = (container) => {
   return elements;
 };
 
-// Perform comprehensive element-by-element mutual comparison
-const performElementMutualComparison = (leftElements, rightElements) => {
+// Perform exact element-by-element mutual comparison with space preservation
+const performExactElementComparison = (leftElements, rightElements) => {
   const leftProcessed = [];
   const rightProcessed = [];
   let additions = 0, deletions = 0, modifications = 0;
 
-  // Create alignment matrix for optimal matching
-  const alignment = createOptimalAlignment(leftElements, rightElements);
+  // Create exact alignment matrix for optimal matching
+  const alignment = createExactAlignment(leftElements, rightElements);
   
   alignment.forEach(({ leftIndex, rightIndex, matchType }) => {
     const leftElement = leftIndex !== null ? leftElements[leftIndex] : null;
@@ -175,16 +256,17 @@ const performElementMutualComparison = (leftElements, rightElements) => {
     if (matchType === 'match') {
       // Elements match - check for content differences
       if (leftElement && rightElement) {
-        if (areElementsIdentical(leftElement, rightElement)) {
-          // Identical - no highlighting
+        if (areElementsExactlyIdentical(leftElement, rightElement)) {
+          // Identical - no highlighting, preserve exact formatting
           leftProcessed.push({ ...leftElement, highlight: 'none' });
           rightProcessed.push({ ...rightElement, highlight: 'none' });
         } else {
-          // Content differs - apply word-level highlighting
+          // Content differs - apply word-level highlighting while preserving exact formatting
           const { leftHighlighted, rightHighlighted } = performWordLevelMutualDiff(
             leftElement.html, 
             rightElement.html,
-            leftElement.preservedStyles
+            leftElement.preservedStyles,
+            rightElement.preservedStyles
           );
           leftProcessed.push({ 
             ...leftElement, 
@@ -200,13 +282,13 @@ const performElementMutualComparison = (leftElements, rightElements) => {
         }
       }
     } else if (matchType === 'leftOnly') {
-      // Element only in left (removed)
+      // Element only in left (removed) - show in red in left, placeholder in right
       leftProcessed.push({ ...leftElement, highlight: 'removed' });
-      rightProcessed.push(createMutualPlaceholder(leftElement, 'removed'));
+      rightProcessed.push(createExactSpacePlaceholder(leftElement, 'removed'));
       deletions++;
     } else if (matchType === 'rightOnly') {
-      // Element only in right (added)
-      leftProcessed.push(createMutualPlaceholder(rightElement, 'added'));
+      // Element only in right (added) - placeholder in left, show in green in right
+      leftProcessed.push(createExactSpacePlaceholder(rightElement, 'added'));
       rightProcessed.push({ ...rightElement, highlight: 'added' });
       additions++;
     }
@@ -223,18 +305,18 @@ const performElementMutualComparison = (leftElements, rightElements) => {
   };
 };
 
-// Create optimal alignment between elements for mutual comparison
-const createOptimalAlignment = (leftElements, rightElements) => {
+// Create exact alignment between elements for mutual comparison
+const createExactAlignment = (leftElements, rightElements) => {
   const alignment = [];
   const leftUsed = new Set();
   const rightUsed = new Set();
   
-  // First pass: exact matches
+  // First pass: exact matches by content and structure
   leftElements.forEach((leftEl, leftIndex) => {
     rightElements.forEach((rightEl, rightIndex) => {
       if (leftUsed.has(leftIndex) || rightUsed.has(rightIndex)) return;
       
-      if (areElementsIdentical(leftEl, rightEl)) {
+      if (areElementsExactlyIdentical(leftEl, rightEl)) {
         alignment.push({ leftIndex, rightIndex, matchType: 'match' });
         leftUsed.add(leftIndex);
         rightUsed.add(rightIndex);
@@ -242,14 +324,14 @@ const createOptimalAlignment = (leftElements, rightElements) => {
     });
   });
   
-  // Second pass: similar content matches
+  // Second pass: similar content matches with same structure
   leftElements.forEach((leftEl, leftIndex) => {
     if (leftUsed.has(leftIndex)) return;
     
     rightElements.forEach((rightEl, rightIndex) => {
       if (rightUsed.has(rightIndex)) return;
       
-      if (areElementsSimilar(leftEl, rightEl)) {
+      if (areElementsStructurallySimilar(leftEl, rightEl)) {
         alignment.push({ leftIndex, rightIndex, matchType: 'match' });
         leftUsed.add(leftIndex);
         rightUsed.add(rightIndex);
@@ -257,7 +339,7 @@ const createOptimalAlignment = (leftElements, rightElements) => {
     });
   });
   
-  // Third pass: add unmatched elements
+  // Third pass: add unmatched elements in document order
   leftElements.forEach((leftEl, leftIndex) => {
     if (!leftUsed.has(leftIndex)) {
       alignment.push({ leftIndex, rightIndex: null, matchType: 'leftOnly' });
@@ -272,14 +354,14 @@ const createOptimalAlignment = (leftElements, rightElements) => {
   
   // Sort by position to maintain document order
   return alignment.sort((a, b) => {
-    const aPos = a.leftIndex !== null ? a.leftIndex : a.rightIndex + 1000;
-    const bPos = b.leftIndex !== null ? b.leftIndex : b.rightIndex + 1000;
+    const aPos = a.leftIndex !== null ? a.leftIndex : (a.rightIndex + 10000);
+    const bPos = b.leftIndex !== null ? b.leftIndex : (b.rightIndex + 10000);
     return aPos - bPos;
   });
 };
 
-// Create placeholder element that maintains original formatting and dimensions
-const createMutualPlaceholder = (originalElement, changeType) => {
+// Create exact space placeholder that maintains original element's exact dimensions and formatting
+const createExactSpacePlaceholder = (originalElement, changeType) => {
   const placeholder = {
     element: null,
     text: '',
@@ -288,18 +370,23 @@ const createMutualPlaceholder = (originalElement, changeType) => {
     highlight: changeType === 'added' ? 'placeholder-added' : 'placeholder-removed',
     placeholderFor: originalElement,
     tagName: originalElement.tagName,
-    preservedStyles: originalElement.preservedStyles,
+    preservedStyles: { ...originalElement.preservedStyles },
+    exactDimensions: { ...originalElement.exactDimensions },
     isImage: originalElement.isImage,
     isTable: originalElement.isTable,
     isTableRow: originalElement.isTableRow,
-    isTableCell: originalElement.isTableCell
+    isTableCell: originalElement.isTableCell,
+    isHeading: originalElement.isHeading,
+    isParagraph: originalElement.isParagraph,
+    isList: originalElement.isList,
+    isListItem: originalElement.isListItem
   };
   
   return placeholder;
 };
 
-// Apply mutual highlighting to document while preserving all original formatting
-const applyMutualHighlighting = (container, processedElements, side) => {
+// Apply exact mutual highlighting to document while preserving all original formatting and dimensions
+const applyExactMutualHighlighting = (container, processedElements, side) => {
   // Clear existing content
   container.innerHTML = '';
   
@@ -310,14 +397,14 @@ const applyMutualHighlighting = (container, processedElements, side) => {
       // Use original element with preserved formatting
       newElement = element.element.cloneNode(true);
     } else if (element.placeholderFor) {
-      // Create placeholder that matches original element's dimensions and type
-      newElement = createFormattedPlaceholder(element.placeholderFor, element.highlight);
+      // Create exact space placeholder that matches original element's dimensions
+      newElement = createExactDimensionPlaceholder(element.placeholderFor, element.highlight);
     } else {
       // Fallback element
       newElement = document.createElement(element.tagName || 'div');
     }
     
-    // Apply highlighting without affecting original formatting
+    // Apply highlighting without affecting original formatting or dimensions
     switch (element.highlight) {
       case 'added':
         newElement.classList.add('mutual-added');
@@ -339,7 +426,7 @@ const applyMutualHighlighting = (container, processedElements, side) => {
         break;
       case 'placeholder-added':
       case 'placeholder-removed':
-        // Placeholder is already created with proper styling
+        // Placeholder is already created with exact styling and dimensions
         break;
       default:
         // No highlighting for unchanged content
@@ -352,56 +439,91 @@ const applyMutualHighlighting = (container, processedElements, side) => {
   });
 };
 
-// Create formatted placeholder that maintains original element's visual space
-const createFormattedPlaceholder = (originalElement, highlightType) => {
+// Create exact dimension placeholder that maintains original element's visual space perfectly
+const createExactDimensionPlaceholder = (originalElement, highlightType) => {
   const placeholder = document.createElement(originalElement.tagName);
   
-  // Apply original styles to maintain exact dimensions
+  // Apply ALL original styles to maintain exact dimensions and appearance
   Object.entries(originalElement.preservedStyles).forEach(([property, value]) => {
-    if (value && value !== 'auto' && value !== 'normal') {
-      placeholder.style[property] = value;
+    if (value && value !== 'auto' && value !== 'normal' && value !== 'initial') {
+      try {
+        placeholder.style.setProperty(property, value, 'important');
+      } catch (error) {
+        console.warn(`Could not set style property ${property}:`, error);
+      }
     }
   });
   
-  // Set appropriate placeholder content based on element type
+  // Ensure exact dimensions are maintained
+  const { exactDimensions } = originalElement;
+  if (exactDimensions.height > 0) {
+    placeholder.style.setProperty('min-height', `${exactDimensions.height}px`, 'important');
+  }
+  if (exactDimensions.width > 0) {
+    placeholder.style.setProperty('min-width', `${exactDimensions.width}px`, 'important');
+  }
+  
+  // Set appropriate placeholder content based on element type while maintaining exact space
   if (originalElement.isImage) {
-    placeholder.style.minHeight = '100px';
-    placeholder.style.border = '2px dashed';
-    placeholder.style.borderRadius = '8px';
-    placeholder.style.display = 'flex';
-    placeholder.style.alignItems = 'center';
-    placeholder.style.justifyContent = 'center';
-    placeholder.style.backgroundColor = highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2';
-    placeholder.style.borderColor = highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444';
-    placeholder.innerHTML = `<span style="color: ${highlightType === 'placeholder-added' ? '#166534' : '#991b1b'}; font-style: italic; font-size: 14px;">[${highlightType === 'placeholder-added' ? 'Image Added' : 'Image Removed'}]</span>`;
+    placeholder.style.setProperty('display', 'flex', 'important');
+    placeholder.style.setProperty('align-items', 'center', 'important');
+    placeholder.style.setProperty('justify-content', 'center', 'important');
+    placeholder.style.setProperty('border', '2px dashed', 'important');
+    placeholder.style.setProperty('border-radius', '8px', 'important');
+    placeholder.style.setProperty('background-color', highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2', 'important');
+    placeholder.style.setProperty('border-color', highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444', 'important');
+    
+    const imageText = document.createElement('span');
+    imageText.style.color = highlightType === 'placeholder-added' ? '#166534' : '#991b1b';
+    imageText.style.fontStyle = 'italic';
+    imageText.style.fontSize = '14px';
+    imageText.style.fontFamily = 'system-ui, sans-serif';
+    imageText.textContent = `[${highlightType === 'placeholder-added' ? 'Image Added' : 'Image Removed'}]`;
+    placeholder.appendChild(imageText);
+    
   } else if (originalElement.isTable) {
-    placeholder.style.minHeight = '60px';
-    placeholder.style.border = '2px dashed';
-    placeholder.style.borderRadius = '8px';
-    placeholder.style.display = 'flex';
-    placeholder.style.alignItems = 'center';
-    placeholder.style.justifyContent = 'center';
-    placeholder.style.backgroundColor = highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2';
-    placeholder.style.borderColor = highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444';
-    placeholder.innerHTML = `<span style="color: ${highlightType === 'placeholder-added' ? '#166534' : '#991b1b'}; font-style: italic; font-size: 14px;">[${highlightType === 'placeholder-added' ? 'Table Added' : 'Table Removed'}]</span>`;
+    placeholder.style.setProperty('display', 'flex', 'important');
+    placeholder.style.setProperty('align-items', 'center', 'important');
+    placeholder.style.setProperty('justify-content', 'center', 'important');
+    placeholder.style.setProperty('border', '2px dashed', 'important');
+    placeholder.style.setProperty('border-radius', '8px', 'important');
+    placeholder.style.setProperty('background-color', highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2', 'important');
+    placeholder.style.setProperty('border-color', highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444', 'important');
+    
+    const tableText = document.createElement('span');
+    tableText.style.color = highlightType === 'placeholder-added' ? '#166534' : '#991b1b';
+    tableText.style.fontStyle = 'italic';
+    tableText.style.fontSize = '14px';
+    tableText.style.fontFamily = 'system-ui, sans-serif';
+    tableText.textContent = `[${highlightType === 'placeholder-added' ? 'Table Added' : 'Table Removed'}]`;
+    placeholder.appendChild(tableText);
+    
   } else {
-    // Text element placeholder
-    const previewText = originalElement.text.substring(0, 100) + (originalElement.text.length > 100 ? '...' : '');
-    placeholder.style.minHeight = '1.5em';
-    placeholder.style.padding = '8px 12px';
-    placeholder.style.border = '2px dashed';
-    placeholder.style.borderRadius = '6px';
-    placeholder.style.backgroundColor = highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2';
-    placeholder.style.borderColor = highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444';
-    placeholder.innerHTML = `<span style="color: ${highlightType === 'placeholder-added' ? '#166534' : '#991b1b'}; font-style: italic; opacity: 0.8;">[${highlightType === 'placeholder-added' ? 'Content Added' : 'Content Removed'}: "${previewText}"]</span>`;
+    // Text element placeholder - maintain exact text formatting and spacing
+    const previewText = originalElement.text.substring(0, 50) + (originalElement.text.length > 50 ? '...' : '');
+    placeholder.style.setProperty('border', '2px dashed', 'important');
+    placeholder.style.setProperty('border-radius', '6px', 'important');
+    placeholder.style.setProperty('background-color', highlightType === 'placeholder-added' ? '#f0fdf4' : '#fef2f2', 'important');
+    placeholder.style.setProperty('border-color', highlightType === 'placeholder-added' ? '#22c55e' : '#ef4444', 'important');
+    
+    // Create placeholder text that maintains original formatting
+    const placeholderText = document.createElement('span');
+    placeholderText.style.color = highlightType === 'placeholder-added' ? '#166534' : '#991b1b';
+    placeholderText.style.fontStyle = 'italic';
+    placeholderText.style.opacity = '0.8';
+    placeholderText.style.fontSize = 'inherit';
+    placeholderText.style.fontFamily = 'inherit';
+    placeholderText.style.lineHeight = 'inherit';
+    placeholderText.textContent = `[${highlightType === 'placeholder-added' ? 'Content Added' : 'Content Removed'}: "${previewText}"]`;
+    placeholder.appendChild(placeholderText);
   }
   
   placeholder.classList.add('mutual-placeholder', highlightType);
   return placeholder;
 };
 
-// Perform word-level mutual diff that preserves original formatting
-const performWordLevelMutualDiff = (leftHtml, rightHtml, preservedStyles) => {
+// Perform word-level mutual diff that preserves exact original formatting
+const performWordLevelMutualDiff = (leftHtml, rightHtml, leftStyles, rightStyles) => {
   // Extract text content for comparison
   const leftText = extractPlainText(leftHtml);
   const rightText = extractPlainText(rightHtml);
@@ -414,19 +536,19 @@ const performWordLevelMutualDiff = (leftHtml, rightHtml, preservedStyles) => {
   const diffs = dmp.diff_main(leftText, rightText);
   dmp.diff_cleanupSemantic(diffs);
   
-  // Apply highlighting while preserving original HTML structure
-  const leftHighlighted = applyMutualDiffToHtml(leftHtml, diffs, 'left', preservedStyles);
-  const rightHighlighted = applyMutualDiffToHtml(rightHtml, diffs, 'right', preservedStyles);
+  // Apply highlighting while preserving exact original HTML structure and formatting
+  const leftHighlighted = applyExactMutualDiffToHtml(leftHtml, diffs, 'left', leftStyles);
+  const rightHighlighted = applyExactMutualDiffToHtml(rightHtml, diffs, 'right', rightStyles);
   
   return { leftHighlighted, rightHighlighted };
 };
 
-// Apply diff highlighting to HTML while preserving all original formatting
-const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
+// Apply diff highlighting to HTML while preserving ALL original formatting exactly
+const applyExactMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = originalHtml;
   
-  // Get the text content and create a mapping of text positions to DOM nodes
+  // Get all text nodes and create exact mapping
   const textNodes = [];
   const walker = document.createTreeWalker(
     tempDiv,
@@ -437,12 +559,12 @@ const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
   
   let node;
   while (node = walker.nextNode()) {
-    if (node.textContent.trim()) {
+    if (node.textContent && node.textContent.trim()) {
       textNodes.push(node);
     }
   }
   
-  // Apply highlighting based on diffs
+  // Apply highlighting based on diffs while preserving exact formatting
   let textOffset = 0;
   let currentNodeIndex = 0;
   let currentNodeOffset = 0;
@@ -455,14 +577,14 @@ const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
       textOffset += text.length;
       advanceTextPosition(text.length);
     } else if ((operation === 1 && side === 'right') || (operation === -1 && side === 'left')) {
-      // Show actual change
+      // Show actual change with exact formatting preservation
       const highlightClass = operation === 1 ? 'mutual-inline-added' : 'mutual-inline-removed';
-      insertHighlightedText(text, highlightClass, preservedStyles);
+      insertHighlightedTextWithExactFormatting(text, highlightClass, preservedStyles);
       if (operation === 1) textOffset += text.length;
     } else {
-      // Show placeholder for opposite side
+      // Show placeholder for opposite side with exact spacing
       const placeholderClass = operation === 1 ? 'mutual-inline-placeholder-added' : 'mutual-inline-placeholder-removed';
-      insertPlaceholderText(text, placeholderClass, preservedStyles);
+      insertPlaceholderTextWithExactSpacing(text, placeholderClass, preservedStyles);
     }
   });
   
@@ -484,17 +606,21 @@ const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
     }
   }
   
-  function insertHighlightedText(text, className, styles) {
+  function insertHighlightedTextWithExactFormatting(text, className, styles) {
     if (currentNodeIndex < textNodes.length) {
       const node = textNodes[currentNodeIndex];
       const span = document.createElement('span');
       span.className = className;
       span.textContent = text;
       
-      // Preserve original formatting
+      // Preserve ALL original formatting exactly
       Object.entries(styles).forEach(([property, value]) => {
-        if (value && value !== 'auto' && value !== 'normal') {
-          span.style[property] = value;
+        if (value && value !== 'auto' && value !== 'normal' && value !== 'initial') {
+          try {
+            span.style.setProperty(property, value, 'important');
+          } catch (error) {
+            console.warn(`Could not preserve style ${property}:`, error);
+          }
         }
       });
       
@@ -502,17 +628,29 @@ const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
     }
   }
   
-  function insertPlaceholderText(text, className, styles) {
+  function insertPlaceholderTextWithExactSpacing(text, className, styles) {
     if (currentNodeIndex < textNodes.length) {
       const node = textNodes[currentNodeIndex];
       const span = document.createElement('span');
       span.className = className;
-      span.innerHTML = `<em style="opacity: 0.7; font-size: 0.9em;">[${text.substring(0, 30)}${text.length > 30 ? '...' : ''}]</em>`;
       
-      // Preserve original formatting for placeholder
+      // Create placeholder that maintains exact text spacing
+      const placeholderContent = document.createElement('em');
+      placeholderContent.style.opacity = '0.7';
+      placeholderContent.style.fontSize = '0.9em';
+      placeholderContent.style.fontStyle = 'italic';
+      placeholderContent.style.fontFamily = 'system-ui, sans-serif';
+      placeholderContent.textContent = `[${text.substring(0, 30)}${text.length > 30 ? '...' : ''}]`;
+      span.appendChild(placeholderContent);
+      
+      // Preserve original formatting for placeholder container
       Object.entries(styles).forEach(([property, value]) => {
-        if (value && value !== 'auto' && value !== 'normal') {
-          span.style[property] = value;
+        if (value && value !== 'auto' && value !== 'normal' && value !== 'initial') {
+          try {
+            span.style.setProperty(property, value, 'important');
+          } catch (error) {
+            console.warn(`Could not preserve placeholder style ${property}:`, error);
+          }
         }
       });
       
@@ -523,34 +661,43 @@ const applyMutualDiffToHtml = (originalHtml, diffs, side, preservedStyles) => {
   return tempDiv.innerHTML;
 };
 
-// Element comparison functions
-const areElementsIdentical = (el1, el2) => {
+// Enhanced element comparison functions
+const areElementsExactlyIdentical = (el1, el2) => {
   if (!el1 || !el2) return false;
   if (el1.tagName !== el2.tagName) return false;
   
-  // For images, compare src attributes
+  // For images, compare src attributes and dimensions
   if (el1.isImage && el2.isImage) {
     const src1 = el1.element.getAttribute('src') || '';
     const src2 = el2.element.getAttribute('src') || '';
-    return src1 === src2;
+    const alt1 = el1.element.getAttribute('alt') || '';
+    const alt2 = el2.element.getAttribute('alt') || '';
+    return src1 === src2 && alt1 === alt2;
   }
   
-  // For text content, normalize and compare
+  // For tables, compare structure and content
+  if (el1.isTable && el2.isTable) {
+    const table1Html = el1.html.replace(/\s+/g, ' ').trim();
+    const table2Html = el2.html.replace(/\s+/g, ' ').trim();
+    return table1Html === table2Html;
+  }
+  
+  // For text content, normalize and compare exactly
   const text1 = el1.text.replace(/\s+/g, ' ').trim();
   const text2 = el2.text.replace(/\s+/g, ' ').trim();
   return text1 === text2;
 };
 
-const areElementsSimilar = (el1, el2) => {
+const areElementsStructurallySimilar = (el1, el2) => {
   if (!el1 || !el2) return false;
   if (el1.tagName !== el2.tagName) return false;
   
-  // For images, they're either identical or not similar
-  if (el1.isImage || el2.isImage) return false;
+  // For images and tables, they're either identical or not similar
+  if (el1.isImage || el2.isImage || el1.isTable || el2.isTable) return false;
   
-  // Calculate text similarity
+  // Calculate text similarity for text elements
   const similarity = getTextSimilarity(el1.text, el2.text);
-  return similarity > 0.6; // 60% similarity threshold
+  return similarity > 0.7; // 70% similarity threshold for structural matching
 };
 
 const getTextSimilarity = (text1, text2) => {
@@ -623,7 +770,7 @@ const escapeHtml = (text) => {
   return div.innerHTML;
 };
 
-// Generate detailed report for mutual comparison
+// Generate detailed report for exact mutual comparison
 const generateDetailedMutualReport = (leftElements, rightElements) => {
   try {
     const lines = [];
@@ -637,7 +784,7 @@ const generateDetailedMutualReport = (leftElements, rightElements) => {
       const rightEl = rightElements[i];
       
       if (leftEl && rightEl) {
-        if (areElementsIdentical(leftEl, rightEl)) {
+        if (areElementsExactlyIdentical(leftEl, rightEl)) {
           lines.push({
             v1: String(i + 1),
             v2: String(i + 1),
@@ -652,22 +799,24 @@ const generateDetailedMutualReport = (leftElements, rightElements) => {
             v2: String(i + 1),
             status: "MODIFIED",
             diffHtml,
-            formatChanges: ["Content modified with mutual highlighting"]
+            formatChanges: ["Content modified with exact spacing preservation"]
           });
         }
         
-        // Track table and image changes
+        // Track table and image changes with exact dimensions
         if (leftEl.isTable || rightEl.isTable) {
           tables.push({
-            status: areElementsIdentical(leftEl, rightEl) ? "UNCHANGED" : "MODIFIED",
-            table: i + 1
+            status: areElementsExactlyIdentical(leftEl, rightEl) ? "UNCHANGED" : "MODIFIED",
+            table: i + 1,
+            dimensions: leftEl.exactDimensions || rightEl.exactDimensions
           });
         }
         
         if (leftEl.isImage || rightEl.isImage) {
           images.push({
-            status: areElementsIdentical(leftEl, rightEl) ? "UNCHANGED" : "MODIFIED",
-            index: i + 1
+            status: areElementsExactlyIdentical(leftEl, rightEl) ? "UNCHANGED" : "MODIFIED",
+            index: i + 1,
+            dimensions: leftEl.exactDimensions || rightEl.exactDimensions
           });
         }
       } else if (leftEl && !rightEl) {
@@ -676,33 +825,33 @@ const generateDetailedMutualReport = (leftElements, rightElements) => {
           v2: "",
           status: "REMOVED",
           diffHtml: `<span class="mutual-inline-removed">${escapeHtml(leftEl.text)}</span>`,
-          formatChanges: ["Element removed - placeholder shown in modified document"]
+          formatChanges: ["Element removed - exact space placeholder shown in modified document"]
         });
         
-        if (leftEl.isTable) tables.push({ status: "REMOVED", table: i + 1 });
-        if (leftEl.isImage) images.push({ status: "REMOVED", index: i + 1 });
+        if (leftEl.isTable) tables.push({ status: "REMOVED", table: i + 1, dimensions: leftEl.exactDimensions });
+        if (leftEl.isImage) images.push({ status: "REMOVED", index: i + 1, dimensions: leftEl.exactDimensions });
       } else if (!leftEl && rightEl) {
         lines.push({
           v1: "",
           v2: String(i + 1),
           status: "ADDED",
           diffHtml: `<span class="mutual-inline-added">${escapeHtml(rightEl.text)}</span>`,
-          formatChanges: ["Element added - placeholder shown in original document"]
+          formatChanges: ["Element added - exact space placeholder shown in original document"]
         });
         
-        if (rightEl.isTable) tables.push({ status: "ADDED", table: i + 1 });
-        if (rightEl.isImage) images.push({ status: "ADDED", index: i + 1 });
+        if (rightEl.isTable) tables.push({ status: "ADDED", table: i + 1, dimensions: rightEl.exactDimensions });
+        if (rightEl.isImage) images.push({ status: "ADDED", index: i + 1, dimensions: rightEl.exactDimensions });
       }
     }
 
     return { lines, tables, images };
   } catch (error) {
-    console.error('Error generating mutual detailed report:', error);
+    console.error('Error generating exact mutual detailed report:', error);
     return { lines: [], tables: [], images: [] };
   }
 };
 
-// Create inline diff for mutual comparison
+// Create inline diff for mutual comparison with exact formatting
 const createMutualInlineDiff = (leftText, rightText) => {
   const dmp = new diff_match_patch();
   const diffs = dmp.diff_main(leftText || "", rightText || "");
