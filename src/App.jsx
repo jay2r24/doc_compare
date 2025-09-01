@@ -202,17 +202,17 @@ function App() {
             {/* Legend */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
               <h4 className="text-sm font-semibold text-gray-700 mb-3">
-                Mutual Comparison Legend
+                Complete Mutual Comparison Legend
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div className="space-y-3">
-                  <h5 className="font-medium text-gray-700">Content Changes (Both Documents)</h5>
+                  <h5 className="font-medium text-gray-700">Content Changes (Shown in Both Documents)</h5>
                   <div className="flex items-center gap-2">
                     <span className="bg-green-200 text-green-800 px-2 py-1 rounded">
                       Added text
                     </span>
                     <span className="text-gray-600">
-                      Content added in modified document (shown in both)
+                      New content in modified document
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -220,7 +220,7 @@ function App() {
                       Deleted text
                     </span>
                     <span className="text-gray-600">
-                      Content removed from original document (shown in both)
+                      Content removed from original document
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -228,48 +228,47 @@ function App() {
                       Modified text
                     </span>
                     <span className="text-gray-600">
-                      Content modified between documents (shown in both)
+                      Content changed between documents
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <h5 className="font-medium text-gray-700">
-                    Structural Changes & Placeholders
+                    Structural Elements (Tables, Images, Sections)
                   </h5>
                   <div className="flex items-center gap-2">
-                    <span className="bg-green-200 text-green-800 px-2 py-1 rounded border-l-4 border-green-500">
-                      Added Elements
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded border-2 border-dashed border-green-500">
+                      [Added Element]
                     </span>
                     <span className="text-gray-600">
-                      New content with placeholders in original
+                      Placeholder in original document
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="bg-red-200 text-red-800 px-2 py-1 rounded border-l-4 border-red-500">
-                      Removed Elements
+                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded border-2 border-dashed border-red-500">
+                      [Removed Element]
                     </span>
                     <span className="text-gray-600">
-                      Deleted content with placeholders in modified
+                      Placeholder in modified document
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="bg-yellow-200 text-yellow-800 px-2 py-1 rounded border-l-4 border-yellow-500">
-                      Modified Elements
+                    <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded border-2 border-solid border-yellow-500">
+                      Modified Element
                     </span>
                     <span className="text-gray-600">
-                      Content changed between documents
+                      Element with internal changes
                     </span>
                   </div>
                 </div>
               </div>
               <div className="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
                 <div className="flex items-center gap-2 text-indigo-700 text-sm">
-                  <span className="font-medium">💡 Mutual Comparison:</span>
+                  <span className="font-medium">💡 Complete Mutual Highlighting:</span>
                 </div>
                 <div className="mt-1 text-sm text-indigo-600">
-                  Both documents show all changes with placeholders maintaining layout structure. 
-                  This ensures you can see exactly what was added, removed, or modified in context.
+                  Every difference is highlighted in both documents. When content is removed, the original document shows the actual content highlighted in red, while the modified document shows a placeholder in the same space. When content is added, the modified document shows the new content highlighted in green, while the original document shows a placeholder. Original Word formatting (fonts, tables, images, spacing) is preserved exactly.
                 </div>
               </div>
             </div>

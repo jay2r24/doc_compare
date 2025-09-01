@@ -104,6 +104,57 @@ const DocumentPreview = ({ document, diffs, title, containerId }) => {
     };
   }, [content]);
 
+  // Ensure Word document formatting is preserved after comparison
+  useEffect(() => {
+    if (!contentRef.current || !content) return;
+    
+    // Apply format preservation after content is rendered
+    const preserveWordFormatting = () => {
+      const container = contentRef.current;
+      if (!container) return;
+      
+      // Ensure all Word document elements maintain their original styling
+      const wordElements = container.querySelectorAll('*');
+      wordElements.forEach(element => {
+        // Preserve original Word document styling
+        if (element.style.fontFamily) {
+          element.style.setProperty('font-family', element.style.fontFamily, 'important');
+        }
+        if (element.style.fontSize) {
+          element.style.setProperty('font-size', element.style.fontSize, 'important');
+        }
+        if (element.style.fontWeight) {
+          element.style.setProperty('font-weight', element.style.fontWeight, 'important');
+        }
+        if (element.style.color) {
+          element.style.setProperty('color', element.style.color, 'important');
+        }
+        if (element.style.lineHeight) {
+          element.style.setProperty('line-height', element.style.lineHeight, 'important');
+        }
+        if (element.style.textAlign) {
+          element.style.setProperty('text-align', element.style.textAlign, 'important');
+        }
+      });
+    };
+    
+    // Apply preservation immediately and after any DOM changes
+    const timer = setTimeout(preserveWordFormatting, 100);
+    
+    const observer = new MutationObserver(preserveWordFormatting);
+    observer.observe(contentRef.current, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
+    });
+    
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [content]);
+
   return (
     <div className="h-full flex flex-col bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* Header */}
